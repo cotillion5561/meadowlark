@@ -4,7 +4,8 @@
   "description": "A travel website to Oregon",
   "main": "meadowlark.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "lint": "eslint meadowlark.js lib"
   },
   "keywords": [
     "meadowlark"
@@ -14,5 +15,12 @@
   "dependencies": {
     "express": "^4.18.1",
     "express-handlebars": "^6.0.6"
+  },
+  "devDependencies": {
+    "eslint": "^8.18.0",
+    "eslint-plugin-react": "^7.30.1",
+    "jest": "^28.1.1",
+    "portfinder": "^1.0.28",
+    "puppeteer": "^15.1.1"
   }
 }
