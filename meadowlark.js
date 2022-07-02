@@ -2,19 +2,48 @@ const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const fortune = require('./lib/fortune')
 const handlers = require('./lib/handlers')
+const weatherMiddleware = require('./lib/middleware/weather')
+const bodyParser = require('body-parser')
+//const multiparty = require('multiparty')
 const app = express()
 
 app.engine('handlebars', expressHandlebars.engine({
-    defaultLayout: 'main'
+    defaultLayout: 'main',
+    helpers: {
+        section: function(name, options) {
+          if(!this._sections) this._sections = {}
+          this._sections[name] = options.fn(this)
+          return null
+        },
+      }
 }))
 
 app.set('view engine', 'handlebars')
-app.use(express.static(__dirname + '/public'))
+
+app.use(bodyParser.urlencoded({ extended: true }))
+//app.use(bodyParser.json())
+
+
 const port = process.env.PORT || 3000
+
+app.use(express.static(__dirname + '/public'))
+
+app.use(weatherMiddleware)
 
 app.get('/',handlers.home)
 
 app.get('/about',handlers.about)
+
+app.get('/headers', (req, res) => {
+    res.type('text/plain')
+    const headers = Object.entries(req.headers)
+        .map(([key, value]) => `${key} : ${value}`)
+    res.send(headers.join('\n'))
+})
+
+app.get('/newsletter-signup', handlers.newsletterSignup)
+app.post('/newsletter-signup/process', handlers.newsletterSignupProcess)
+app.get('/newsletter-signup/thank-you', handlers.newsletterSignupThankYou)
 
 //custom 404 page
 app.use(handlers.notFound)
