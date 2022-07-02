@@ -1,12 +1,12 @@
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
-//const multiparty = require('multiparty')
+const multiparty = require('multiparty')
 
 const handlers = require('./lib/handlers')
 const weatherMiddlware = require('./lib/middleware/weather')
 
-const app = express();
+const app = express()
 
 // configure Handlebars view engine
 app.engine('handlebars', expressHandlebars.engine({
@@ -17,7 +17,7 @@ app.engine('handlebars', expressHandlebars.engine({
       this._sections[name] = options.fn(this)
       return null
     },
-  }
+  },
 }))
 app.set('view engine', 'handlebars')
 
@@ -31,6 +31,7 @@ app.use(express.static(__dirname + '/public'))
 app.use(weatherMiddlware)
 
 app.get('/', handlers.home)
+app.get('/about', handlers.about)
 
 // handlers for browser-based form submission
 app.get('/newsletter-signup', handlers.newsletterSignup)
@@ -41,7 +42,7 @@ app.get('/newsletter-signup/thank-you', handlers.newsletterSignupThankYou)
 app.get('/newsletter', handlers.newsletter)
 app.post('/api/newsletter-signup', handlers.api.newsletterSignup)
 
-/* // vacation photo contest
+ // vacation photo contest
 app.get('/contest/vacation-photo', handlers.vacationPhotoContest)
 app.get('/contest/vacation-photo-ajax', handlers.vacationPhotoContestAjax)
 app.post('/contest/vacation-photo/:year/:month', (req, res) => {
@@ -52,7 +53,7 @@ app.post('/contest/vacation-photo/:year/:month', (req, res) => {
     console.log('and files: ', files)
     handlers.vacationPhotoContestProcess(req, res, fields, files)
   })
-}) 
+})
 app.get('/contest/vacation-photo-thank-you', handlers.vacationPhotoContestProcessThankYou)
 app.post('/api/vacation-photo-contest/:year/:month', (req, res) => {
   const form = new multiparty.Form()
@@ -61,7 +62,7 @@ app.post('/api/vacation-photo-contest/:year/:month', (req, res) => {
     handlers.api.vacationPhotoContest(req, res, fields, files)
   })
 })
-*/
+
 app.use(handlers.notFound)
 app.use(handlers.serverError)
 
