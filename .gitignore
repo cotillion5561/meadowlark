@@ -16,3 +16,6 @@ Thumbs.db
 *.log
 *.sql
 *.sqlite
+
+# Credential Files
+credentials.*
